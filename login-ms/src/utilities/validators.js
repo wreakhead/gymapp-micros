@@ -11,4 +11,10 @@ const passwordCheck = (password) => {
     return true;
   } else false;
 };
-module.exports = { mobileCheck, passwordCheck };
+const nameCheck = (name) => {
+  nameRegX = new RegExp("^[a-zA-Z]{3,}$");
+  if (nameRegX.test(name)) {
+    return true;
+  } else false;
+};
+module.exports = { mobileCheck, passwordCheck, nameCheck };

@@ -4,12 +4,13 @@ const { Schema } = require("mongoose");
 mongoose.Schema.promise = global.Promise;
 
 mongoose.set("useCreateIndex", true);
-const url ="";
+const url = "";
 
 const loginCollection = Schema(
   {
     mobile: { type: String },
     password: { type: String },
+    name: { type: String },
   },
   { collection: "loginCollection" }
 );
@@ -23,7 +24,7 @@ collection.getLoginCreds = async () => {
       useUnifiedTopology: true,
     });
     let model = await database.model("loginCollection", loginCollection);
-    console.log("connected");
+
     return model;
   } catch {
     let error = new Error("DB connection failed");
