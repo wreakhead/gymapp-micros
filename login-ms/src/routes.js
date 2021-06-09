@@ -4,6 +4,8 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const validators = require("./utilities/validators");
 const loginService = require("./utilities/connection");
+const workoutUrl = "http://localhost:7001/";
+const axios = require("axios");
 
 const auth = require("./utilities/auth");
 router.post("/signup", async (req, res, next) => {
@@ -14,15 +16,19 @@ router.post("/signup", async (req, res, next) => {
     if (findUser) {
       res.status(400).json({ message: "user already exists!" });
     } else {
+      let createEntry = await axios.post(`${workoutUrl}createEntry`, loginData);
+      console.log(createEntry.data.message);
       if (
         validators.nameCheck(loginData.name) &&
         validators.mobileCheck(loginData.mobile) &&
-        validators.passwordCheck(loginData.password)
+        validators.passwordCheck(loginData.password) &&
+        createEntry.data.message == "entry added"
       ) {
         const salt = await bcrypt.genSalt();
         const hashedPass = await bcrypt.hash(loginData.password, salt);
 
         const updateData = new DB({
+          name: loginData.name,
           mobile: loginData.mobile,
           password: hashedPass,
         });
@@ -49,7 +55,7 @@ router.post("/signin", async (req, res, next) => {
     if (findUser) {
       if (await bcrypt.compare(loginData.password, findUser.password)) {
         const newToken = await jwt.sign(
-          { _id: findUser._id },
+          { mobile: findUser.mobile },
           "jksdu6787sab373768734khbxc76736jsh65364dc65237er24"
         );
 
@@ -67,10 +73,16 @@ router.post("/signin", async (req, res, next) => {
 
 router.delete("/deleteuser", auth.authToken, async (req, res, next) => {
   try {
-    console.log(req.id._id);
     let DB = await loginService.getLoginCreds();
-    let deleteUser = await DB.deleteOne({ _id: req.id._id });
-    if (deleteUser.deletedCount == 1)
+    let deleteUser = await DB.deleteOne({ mobile: req.id.mobile });
+
+    const config = {
+      headers: { authorization: `Bearer ${req.token}` },
+    };
+
+    let deleteUserData = await axios.delete(`${workoutUrl}deleteuser`, config);
+
+    if (deleteUser.deletedCount == 1 && deleteUserData.deletedCount == 1)
       res.status(200).json({ message: "User deleted" });
     else res.status(400).json({ message: "error in deletion" });
   } catch (error) {
