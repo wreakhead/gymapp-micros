@@ -4,9 +4,7 @@ const { Schema } = require("mongoose");
 mongoose.Schema.promise = global.Promise;
 
 mongoose.set("useCreateIndex", true);
-const url =
-  "";
-
+const url = "";
 const workoutData = Schema(
   {
     mobile: { type: String },
@@ -16,6 +14,7 @@ const workoutData = Schema(
         name: { type: String },
         sets: { type: Number },
         reps: { type: Number },
+        weight: { type: Number },
         AMQRP: { type: Number },
         AMQRPwt: { type: Number },
         remark: { type: String },
@@ -27,7 +26,7 @@ const workoutData = Schema(
 
 let collection = {};
 
-collection.getWorkoutData = async  () => {
+collection.getWorkoutData = async () => {
   try {
     let database = await mongoose.connect(url, {
       useNewUrlParser: true,

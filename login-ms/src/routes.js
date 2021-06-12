@@ -59,7 +59,9 @@ router.post("/signin", async (req, res, next) => {
           "jksdu6787sab373768734khbxc76736jsh65364dc65237er24"
         );
 
-        res.status(200).json({ id: findUser._id, token: newToken });
+        res
+          .status(200)
+          .json({ id: findUser._id, name: findUser.name, token: newToken });
       } else {
         res.status(400).json({ message: "password incorrect" });
       }

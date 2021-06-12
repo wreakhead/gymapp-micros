@@ -5,7 +5,6 @@ mongoose.Schema.promise = global.Promise;
 
 mongoose.set("useCreateIndex", true);
 const url = "";
-
 const loginCollection = Schema(
   {
     mobile: { type: String },

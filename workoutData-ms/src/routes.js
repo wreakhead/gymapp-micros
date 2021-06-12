@@ -40,12 +40,13 @@ router.post("/addworkout", auth.authToken, async (req, res, next) => {
                   name: workoutData.name,
                   sets: workoutData.sets,
                   reps: workoutData.reps,
+                  weight:workoutData.weight,
                   AMQRP: workoutData.AMQRP,
                   AMQRPwt: workoutData.AMQRPwt,
                   remark: workoutData.remark,
                 },
               ],
-              $sort: { date: 1 },
+              $sort: { date: -1 },
             },
           },
         }
@@ -71,4 +72,18 @@ router.delete("/deleteuser", auth.authToken, async (req, res, next) => {
     next(error);
   }
 });
+
+router.get("/getworkoutdata",auth.authToken,async(req,res,next)=>{
+  try{
+    const DB = await workoutService.getWorkoutData();
+    const getData = await DB.findOne({mobile: req.id.mobile},{workout:1});
+    if(getData){
+      console.log(getData)
+      res.status(200).json(getData)
+    }else res.status(404).json({message: "user not found"})
+
+  }catch(error){
+    next(error)
+  }
+})
 module.exports = router;
