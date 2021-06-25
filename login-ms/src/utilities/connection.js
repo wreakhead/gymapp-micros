@@ -7,6 +7,7 @@ mongoose.set("useCreateIndex", true);
 const url = "";
 const loginCollection = Schema(
   {
+    date: { type: Date },
     mobile: { type: String },
     password: { type: String },
     name: { type: String },

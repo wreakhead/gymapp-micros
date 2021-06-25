@@ -12,9 +12,10 @@ auth.authToken = async (req, res, next) => {
         if (err) return res.sendStatus(403);
         else {
           req.id = id;
-
+          
           next();
         }
+        
       }
     );
   }

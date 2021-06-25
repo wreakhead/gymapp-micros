@@ -38,15 +38,16 @@ router.post("/addworkout", auth.authToken, async (req, res, next) => {
                 {
                   date: new Date(),
                   name: workoutData.name,
+                  type: workoutData.type,
                   sets: workoutData.sets,
                   reps: workoutData.reps,
-                  weight:workoutData.weight,
+                  weight: workoutData.weight,
                   AMQRP: workoutData.AMQRP,
                   AMQRPwt: workoutData.AMQRPwt,
                   remark: workoutData.remark,
                 },
               ],
-              $sort: { date: -1 },
+              $sort: { date: 1 },
             },
           },
         }
@@ -73,17 +74,49 @@ router.delete("/deleteuser", auth.authToken, async (req, res, next) => {
   }
 });
 
-router.get("/getworkoutdata",auth.authToken,async(req,res,next)=>{
-  try{
+router.get("/getworkoutdata", auth.authToken, async (req, res, next) => {
+  try {
     const DB = await workoutService.getWorkoutData();
-    const getData = await DB.findOne({mobile: req.id.mobile},{workout:1});
-    if(getData){
-      console.log(getData)
-      res.status(200).json(getData)
-    }else res.status(404).json({message: "user not found"})
-
-  }catch(error){
-    next(error)
+    const getData = await DB.findOne({ mobile: req.id.mobile }, { workout: 1 });
+    if (getData) {
+      res.status(200).json(getData);
+    } else res.status(404).json({ message: "user not found" });
+  } catch (error) {
+    next(error);
   }
-})
+});
+router.get("/workoutsuggestion", auth.authToken, async (req, res, next) => {
+  try {
+    const DB = await workoutService.getWorkoutData();
+    const getData = await DB.find(
+      { mobile: req.id.mobile },
+      { "workout.name": 1 }
+    );
+    if (getData) {
+      var names = [];
+      getData[0].workout.map((ele) => {
+        names.push(ele.name);
+      });
+      names = [...new Set(names)];
+
+      res.status(200).json(names);
+    } else res.status(404).json({ message: "user not found" });
+  } catch (error) {
+    next(error);
+  }
+});
+router.delete("/deleteworkout/:_id", auth.authToken, async (req, res, next) => {
+  try {
+    const DB = await workoutService.getWorkoutData();
+    const delData = await DB.updateOne(
+      { mobile: req.id.mobile },
+      { $pull: { workout: { _id: req.params._id } } }
+    );
+    if (delData.nModified == 1) res.status(200).json({ status: "done" });
+    else res.status(404).json({ status: "not found" });
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;

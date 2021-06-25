@@ -12,6 +12,7 @@ const workoutData = Schema(
       {
         date: { type: Date, default: new Date() },
         name: { type: String },
+        type: { type: String },
         sets: { type: Number },
         reps: { type: Number },
         weight: { type: Number },

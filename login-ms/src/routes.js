@@ -28,6 +28,7 @@ router.post("/signup", async (req, res, next) => {
         const hashedPass = await bcrypt.hash(loginData.password, salt);
 
         const updateData = new DB({
+          date: new Date(),
           name: loginData.name,
           mobile: loginData.mobile,
           password: hashedPass,
