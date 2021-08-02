@@ -62,7 +62,7 @@ router.post("/signin", async (req, res, next) => {
 
         res
           .status(200)
-          .json({ id: findUser._id, name: findUser.name, token: newToken });
+          .json({ id: findUser._id, name: findUser.name,date:findUser.date, token: newToken });
       } else {
         res.status(400).json({ message: "password incorrect" });
       }

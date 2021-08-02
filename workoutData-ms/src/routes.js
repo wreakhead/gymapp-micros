@@ -80,31 +80,84 @@ router.get("/getworkoutdata", auth.authToken, async (req, res, next) => {
     const getData = await DB.findOne({ mobile: req.id.mobile }, { workout: 1 });
     if (getData) {
       res.status(200).json(getData);
-    } else res.status(404).json({ message: "user not found" });
+    } else res.status(200).json({ message: "no data" });
   } catch (error) {
     next(error);
   }
 });
+
 router.get("/workoutsuggestion", auth.authToken, async (req, res, next) => {
   try {
     const DB = await workoutService.getWorkoutData();
     const getData = await DB.find(
       { mobile: req.id.mobile },
-      { "workout.name": 1 }
+      { "workout": 1 }
     );
     if (getData) {
-      var names = [];
+      let names = [];
+      let dates =[];
       getData[0].workout.map((ele) => {
         names.push(ele.name);
+        dates.push(ele.date.getFullYear())
       });
       names = [...new Set(names)];
+      dates = [...new Set(dates)]
 
-      res.status(200).json(names);
-    } else res.status(404).json({ message: "user not found" });
+      res.status(200).json({names:names,dates:dates});
+    } else res.status(200).json({ message: "no data" });
   } catch (error) {
     next(error);
   }
 });
+
+router.get("/getgraphdata", auth.authToken, async (req, res, next) => {
+  try {
+    const DB = await workoutService.getWorkoutData();
+    const getData = await DB.find({ mobile: req.id.mobile }, { workout: 1 });
+    if (getData) {
+      //getting unique dates
+      let dates = [];
+      getData[0].workout.map((ele) => {
+        dates.push(ele.date.toISOString().substring(0, 10));
+      });
+      dates = [...new Set(dates)];
+
+      //categorising workout w.r.t push,pull,leg.
+      const pushData = [];
+      const pullData = [];
+      const legData = [];
+
+      dates.map((date)=>{
+        let totalPushWt=0
+        let totalPullWt=0
+        let totalLegWt=0
+
+        getData[0].workout.map((el) => {
+          if (el.type == "push" && (date == el.date.toISOString().substring(0, 10))) {
+            totalPushWt = totalPushWt+el.weight;
+          }
+          if (el.type == "pull" && (date == el.date.toISOString().substring(0, 10))) {
+            totalPullWt = totalPullWt+el.weight;
+          }
+          if (el.type == "leg"&& (date == el.date.toISOString().substring(0, 10))) {
+            totalLegWt = totalLegWt+el.weight;
+          }
+        });
+        if(totalPushWt!=0) pushData.push({date:date,weight:totalPushWt})
+        if(totalPullWt!=0) pullData.push({date:date,weight:totalPullWt})
+        if(totalLegWt!=0) legData.push({date:date,weight:totalLegWt}) 
+
+      })
+      
+      
+
+      res.status(200).json({pushData,pullData,legData});
+    } else res.status(200).json({ message: "no data" });
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.delete("/deleteworkout/:_id", auth.authToken, async (req, res, next) => {
   try {
     const DB = await workoutService.getWorkoutData();
