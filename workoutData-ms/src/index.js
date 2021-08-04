@@ -14,7 +14,7 @@ app.get("/", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log("sserver @ 7001");
+  console.log("server @ 7001");
 });
 
 module.exports = app;

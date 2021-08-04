@@ -1,10 +1,11 @@
 const mongoose = require("mongoose");
 const { Schema } = require("mongoose");
-
 mongoose.Schema.promise = global.Promise;
-
 mongoose.set("useCreateIndex", true);
-const url = "mongodb+srv://gymService:HbLvtLv5k3GPCb68@cluster0.he1vq.mongodb.net/gymDB?retryWrites=true&w=majority";
+require("dotenv").config();
+
+const url = process.env.KEY;
+
 const workoutData = Schema(
   {
     mobile: { type: String },

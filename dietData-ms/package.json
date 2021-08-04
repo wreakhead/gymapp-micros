@@ -1,22 +1,27 @@
 {
-  "name": "login-ms",
+  "name": "dietdata-ms",
   "version": "1.0.0",
-  "description": "login microservice for gymapp",
+  "description": "api for dietdata ",
   "main": "index.js",
   "scripts": {
     "start": "nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Imran (wreakhead)",
+  "keywords": [
+    "diet",
+    "api",
+    "gym",
+    "gym",
+    "app"
+  ],
+  "author": "Imran",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.21.1",
-    "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^5.12.13",
-    "nodemon": "^2.0.7"
+    "mongoose": "^5.13.5",
+    "nodemon": "^2.0.12"
   }
 }
