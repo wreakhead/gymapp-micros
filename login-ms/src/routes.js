@@ -6,6 +6,8 @@ const validators = require("./utilities/validators");
 const loginService = require("./utilities/connection");
 const workoutUrl = "http://localhost:7001/";
 const axios = require("axios");
+require("dotenv").config();
+const Token = process.env.TOKEN_KEY;
 
 const auth = require("./utilities/auth");
 router.post("/signup", async (req, res, next) => {
@@ -55,14 +57,16 @@ router.post("/signin", async (req, res, next) => {
 
     if (findUser) {
       if (await bcrypt.compare(loginData.password, findUser.password)) {
-        const newToken = await jwt.sign(
-          { mobile: findUser.mobile },
-          "jksdu6787sab373768734khbxc76736jsh65364dc65237er24"
-        );
+        const newToken = await jwt.sign({ mobile: findUser.mobile }, Token);
 
         res
           .status(200)
-          .json({ id: findUser._id, name: findUser.name,date:findUser.date, token: newToken });
+          .json({
+            id: findUser._id,
+            name: findUser.name,
+            date: findUser.date,
+            token: newToken,
+          });
       } else {
         res.status(400).json({ message: "password incorrect" });
       }
