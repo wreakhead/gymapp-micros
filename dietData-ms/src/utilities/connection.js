@@ -9,6 +9,15 @@ const url = process.env.KEY;
 const dietData = Schema(
   {
     mobile: { type: String },
+    target: [
+      {
+        date: { type: Date, default: new Date() },
+        calories: { type: Number, default: 0 },
+        fat: { type: Number, default: 0 },
+        carbs: { type: Number, default: 0 },
+        protein: { type: Number, default: 0 },
+      },
+    ],
     breakfast: [
       {
         date: { type: Date, default: new Date() },
@@ -16,6 +25,8 @@ const dietData = Schema(
         calories: { type: Number },
         carbs: { type: Number },
         fat: { type: Number },
+        protein: { type: Number },
+        fiber: { type: Number },
       },
     ],
     lunch: [
@@ -25,6 +36,8 @@ const dietData = Schema(
         calories: { type: Number },
         carbs: { type: Number },
         fat: { type: Number },
+        protein: { type: Number },
+        fiber: { type: Number },
       },
     ],
     snacks: [
@@ -34,6 +47,8 @@ const dietData = Schema(
         calories: { type: Number },
         carbs: { type: Number },
         fat: { type: Number },
+        protein: { type: Number },
+        fiber: { type: Number },
       },
     ],
     dinner: [
@@ -43,6 +58,8 @@ const dietData = Schema(
         calories: { type: Number },
         carbs: { type: Number },
         fat: { type: Number },
+        protein: { type: Number },
+        fiber: { type: Number },
       },
     ],
   },

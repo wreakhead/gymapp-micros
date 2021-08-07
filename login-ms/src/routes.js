@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 const validators = require("./utilities/validators");
 const loginService = require("./utilities/connection");
 const workoutUrl = "http://localhost:7001/";
+const dietUrl = "http://localhost:7002/";
 const axios = require("axios");
 require("dotenv").config();
 const Token = process.env.TOKEN_KEY;
@@ -19,12 +20,14 @@ router.post("/signup", async (req, res, next) => {
       res.status(400).json({ message: "user already exists!" });
     } else {
       let createEntry = await axios.post(`${workoutUrl}createEntry`, loginData);
+      let createEntry2 = await axios.post(`${dietUrl}createEntry`, loginData);
       console.log(createEntry.data.message);
       if (
         validators.nameCheck(loginData.name) &&
         validators.mobileCheck(loginData.mobile) &&
         validators.passwordCheck(loginData.password) &&
-        createEntry.data.message == "entry added"
+        createEntry.data.message == "entry added" &&
+        createEntry2.data.message == "entry added"
       ) {
         const salt = await bcrypt.genSalt();
         const hashedPass = await bcrypt.hash(loginData.password, salt);
@@ -59,14 +62,12 @@ router.post("/signin", async (req, res, next) => {
       if (await bcrypt.compare(loginData.password, findUser.password)) {
         const newToken = await jwt.sign({ mobile: findUser.mobile }, Token);
 
-        res
-          .status(200)
-          .json({
-            id: findUser._id,
-            name: findUser.name,
-            date: findUser.date,
-            token: newToken,
-          });
+        res.status(200).json({
+          id: findUser._id,
+          name: findUser.name,
+          date: findUser.date,
+          token: newToken,
+        });
       } else {
         res.status(400).json({ message: "password incorrect" });
       }
