@@ -43,6 +43,7 @@ router.post("/addbreakfast", auth.authToken, async (req, res, next) => {
           return data;
         }
       });
+     
       const calories = Math.round(
         (filterOne[0]?.calories / 100) * breakfastData.amount
       );
@@ -51,7 +52,10 @@ router.post("/addbreakfast", auth.authToken, async (req, res, next) => {
       );
       const fat = Math.round((filterOne[0]?.fat / 100) * breakfastData.amount);
       const protein = Math.round(
-        (filterOne[0]?.fat / 100) * breakfastData.amount
+        (filterOne[0]?.protein / 100) * breakfastData.amount
+      );
+      const fiber = Math.round(
+        (filterOne[0]?.fiber / 100) * breakfastData.amount
       );
 
       console.log(filterOne);
@@ -68,6 +72,7 @@ router.post("/addbreakfast", auth.authToken, async (req, res, next) => {
                   carbs: carbs,
                   fat: fat,
                   protein: protein,
+                  fiber: fiber,
                 },
               ],
               $sort: { date: -1 },
@@ -103,10 +108,12 @@ router.post("/addlunch", auth.authToken, async (req, res, next) => {
       );
       const carbs = Math.round((filterOne[0]?.carbs / 100) * lunchData.amount);
       const fat = Math.round((filterOne[0]?.fat / 100) * lunchData.amount);
-      const protein = Math.round((filterOne[0]?.fat / 100) * lunchData.amount);
+      const protein = Math.round(
+        (filterOne[0]?.protein / 100) * lunchData.amount
+      );
       const fiber = Math.round((filterOne[0]?.fiber / 100) * lunchData.amount);
 
-      console.log(filterOne);
+      
       let addlunch = await DB.updateOne(
         { mobile: req.id.mobile },
         {
@@ -156,10 +163,12 @@ router.post("/addsnacks", auth.authToken, async (req, res, next) => {
       );
       const carbs = Math.round((filterOne[0]?.carbs / 100) * snacksData.amount);
       const fat = Math.round((filterOne[0]?.fat / 100) * snacksData.amount);
-      const protein = Math.round((filterOne[0]?.fat / 100) * snacksData.amount);
+      const protein = Math.round(
+        (filterOne[0]?.protein / 100) * snacksData.amount
+      );
       const fiber = Math.round((filterOne[0]?.fiber / 100) * snacksData.amount);
 
-      console.log(filterOne);
+      
       let addsnacks = await DB.updateOne(
         { mobile: req.id.mobile },
         {
@@ -209,10 +218,12 @@ router.post("/adddinner", auth.authToken, async (req, res, next) => {
       );
       const carbs = Math.round((filterOne[0]?.carbs / 100) * dinnerData.amount);
       const fat = Math.round((filterOne[0]?.fat / 100) * dinnerData.amount);
-      const protein = Math.round((filterOne[0]?.fat / 100) * dinnerData.amount);
+      const protein = Math.round(
+        (filterOne[0]?.protein / 100) * dinnerData.amount
+      );
       const fiber = Math.round((filterOne[0]?.fiber / 100) * dinnerData.amount);
 
-      console.log(filterOne);
+      
       let addinner = await DB.updateOne(
         { mobile: req.id.mobile },
         {
@@ -238,6 +249,198 @@ router.post("/adddinner", auth.authToken, async (req, res, next) => {
         res.status(200).json({ message: "food added" });
       } else res.status(400).json({ message: "unable to update" });
     } else res.status(400).json({ message: "cannot find user" });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/getbreakfastlog", auth.authToken, async (req, res, next) => {
+  try {
+    const DB = await dietService.getDietData();
+    const findUser = await DB.findOne(
+      { mobile: req.id.mobile },
+      { breakfast: 1 }
+    );
+    if (findUser) {
+      todayDate = new Date();
+
+      const todaysLog = findUser.breakfast.filter((ele) => {
+        if (ele.date.toLocaleDateString() == todayDate.toLocaleDateString())
+          return ele;
+      });
+      res.status(200).json({ todaysLog });
+    } else res.status(400).json({ message: "cannot find user" });
+  } catch (error) {
+    next(error);
+  }
+});
+router.get("/getlunchlog", auth.authToken, async (req, res, next) => {
+  try {
+    const DB = await dietService.getDietData();
+    const findUser = await DB.findOne({ mobile: req.id.mobile }, { lunch: 1 });
+    if (findUser) {
+      todayDate = new Date();
+
+      const todaysLog = findUser.lunch.filter((ele) => {
+        if (ele.date.toLocaleDateString() == todayDate.toLocaleDateString())
+          return ele;
+      });
+      res.status(200).json({ todaysLog });
+    } else res.status(400).json({ message: "cannot find user" });
+  } catch (error) {
+    next(error);
+  }
+});
+router.get("/getsnackslog", auth.authToken, async (req, res, next) => {
+  try {
+    const DB = await dietService.getDietData();
+    const findUser = await DB.findOne({ mobile: req.id.mobile }, { snacks: 1 });
+    if (findUser) {
+      todayDate = new Date();
+
+      const todaysLog = findUser.snacks.filter((ele) => {
+        if (ele.date.toLocaleDateString() == todayDate.toLocaleDateString())
+          return ele;
+      });
+      res.status(200).json({ todaysLog });
+    } else res.status(400).json({ message: "cannot find user" });
+  } catch (error) {
+    next(error);
+  }
+});
+router.get("/getdinnerlog", auth.authToken, async (req, res, next) => {
+  try {
+    const DB = await dietService.getDietData();
+    const findUser = await DB.findOne({ mobile: req.id.mobile }, { dinner: 1 });
+    if (findUser) {
+      todayDate = new Date();
+
+      const todaysLog = findUser.dinner.filter((ele) => {
+        if (ele.date.toLocaleDateString() == todayDate.toLocaleDateString())
+          return ele;
+      });
+      res.status(200).json({ todaysLog });
+    } else res.status(400).json({ message: "cannot find user" });
+  } catch (error) {
+    next(error);
+  }
+});
+router.get("/intakeMacros", auth.authToken, async (req, res, next) => {
+  try {
+    const DB = await dietService.getDietData();
+    const findUser = await DB.findOne({ mobile: req.id.mobile });
+    if (findUser) {
+      todayDate = new Date();
+      let totalCalories = 0;
+      let totalFat = 0;
+      let totalFiber = 0;
+      let totalCarbs = 0;
+      let totalProtein = 0;
+      findUser.breakfast.map((ele) => {
+        if (ele.date.toLocaleDateString() == todayDate.toLocaleDateString()) {
+          totalCalories = ele.calories + totalCalories;
+          totalFat = ele.fat + totalFat;
+          totalFiber = ele.fiber + totalFiber;
+          totalCarbs = ele.carbs + totalCarbs;
+          totalProtein = ele.protein + totalProtein;
+        }
+      });
+      findUser.lunch.map((ele) => {
+        if (ele.date.toLocaleDateString() == todayDate.toLocaleDateString()) {
+          totalCalories = ele.calories + totalCalories;
+          totalFat = ele.fat + totalFat;
+          totalFiber = ele.fiber + totalFiber;
+          totalCarbs = ele.carbs + totalCarbs;
+          totalProtein = ele.protein + totalProtein;
+        }
+      });
+      findUser.snacks.map((ele) => {
+        if (ele.date.toLocaleDateString() == todayDate.toLocaleDateString()) {
+          totalCalories = ele.calories + totalCalories;
+          totalFat = ele.fat + totalFat;
+          totalFiber = ele.fiber + totalFiber;
+          totalCarbs = ele.carbs + totalCarbs;
+          totalProtein = ele.protein + totalProtein;
+        }
+      });
+      findUser.dinner.map((ele) => {
+        if (ele.date.toLocaleDateString() == todayDate.toLocaleDateString()) {
+          totalCalories = ele.calories + totalCalories;
+          totalFat = ele.fat + totalFat;
+          totalFiber = ele.fiber + totalFiber;
+          totalCarbs = ele.carbs + totalCarbs;
+          totalProtein = ele.protein + totalProtein;
+        }
+      });
+      res.status(200).json({
+        totalCalories,
+        totalFat,
+        totalCarbs,
+        totalFiber,
+        totalProtein,
+      });
+    } else res.status(400).json({ message: "cannot find user" });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete(
+  "/deletebreakfast/:_id",
+  auth.authToken,
+  async (req, res, next) => {
+    try {
+      const DB = await dietService.getDietData();
+
+      const delData = await DB.updateOne(
+        { mobile: req.id.mobile },
+        { $pull: { breakfast: { _id: req.params._id } } }
+      );
+      if (delData.nModified == 1) res.status(200).json({ status: "done" });
+      else res.status(404).json({ status: "not found" });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+router.delete("/deletelunch/:_id", auth.authToken, async (req, res, next) => {
+  try {
+    const DB = await dietService.getDietData();
+
+    const delData = await DB.updateOne(
+      { mobile: req.id.mobile },
+      { $pull: { lunch: { _id: req.params._id } } }
+    );
+    if (delData.nModified == 1) res.status(200).json({ status: "done" });
+    else res.status(404).json({ status: "not found" });
+  } catch (error) {
+    next(error);
+  }
+});
+router.delete("/deletesnacks/:_id", auth.authToken, async (req, res, next) => {
+  try {
+    const DB = await dietService.getDietData();
+
+    const delData = await DB.updateOne(
+      { mobile: req.id.mobile },
+      { $pull: { snacks: { _id: req.params._id } } }
+    );
+    if (delData.nModified == 1) res.status(200).json({ status: "done" });
+    else res.status(404).json({ status: "not found" });
+  } catch (error) {
+    next(error);
+  }
+});
+router.delete("/deletedinner/:_id", auth.authToken, async (req, res, next) => {
+  try {
+    const DB = await dietService.getDietData();
+
+    const delData = await DB.updateOne(
+      { mobile: req.id.mobile },
+      { $pull: { dinner: { _id: req.params._id } } }
+    );
+    if (delData.nModified == 1) res.status(200).json({ status: "done" });
+    else res.status(404).json({ status: "not found" });
   } catch (error) {
     next(error);
   }

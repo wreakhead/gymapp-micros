@@ -15,7 +15,7 @@ const foodData = Schema(
     carbs: { type: Number },
     fat: { type: Number },
     fiber: { type: Number },
-    protien: { type: Number },
+    protein: { type: Number },
   },
   { collection: "foodData" }
 );

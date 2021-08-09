@@ -24,26 +24,31 @@ router.get("/getfood", async (req, res, next) => {
 router.post("/updatefood", async (req, res, next) => {
   try {
     const food = req.body;
-    
+
     const DB = await foodService.getFoodData();
     const getData = await DB.find();
     let date = new Date();
     if (getData) {
-      const updateData = new DB({
-        date: date,
-        category: food.category,
-        name: food.name,
-        calories: food.calories,
-        carbs: food.carbs,
-        fat: food.fat,
-        fiber: food.fiber,
-        protien: food.protien,
-      });
-      await updateData.save();
-      if (updateData) {
-        res.status(200).json({ messsage: "Food Added" });
+      const checkDuplicate = await DB.findOne({ name: food.name });
+      if (checkDuplicate) {
+        res.status(200).json({ messsage: "Food exists" });
       } else {
-        res.status(500).json({ message: "Food not added" });
+        const updateData = new DB({
+          date: date,
+          category: food.category,
+          name: food.name,
+          calories: food.calories,
+          carbs: food.carbs,
+          fat: food.fat,
+          fiber: food.fiber,
+          protein: food.protein,
+        });
+        await updateData.save();
+        if (updateData) {
+          res.status(200).json({ messsage: "Food Added" });
+        } else {
+          res.status(500).json({ message: "Food not added" });
+        }
       }
     } else res.json(200).json({ message: "Can't update" });
   } catch (error) {
