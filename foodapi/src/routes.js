@@ -8,12 +8,7 @@ router.get("/getfood", async (req, res, next) => {
     const DB = await foodService.getFoodData();
     const allData = await DB.find();
     if (allData) {
-      let name = [];
-      allData.map((ele) => {
-        name.push(ele.name);
-      });
-      name = [...new Set(name)];
-      res.status(200).json({ allData, names: name });
+      res.status(200).json({ allData });
     } else {
       res.json(200).json({ message: "no data" });
     }
@@ -36,6 +31,7 @@ router.post("/updatefood", async (req, res, next) => {
         const updateData = new DB({
           date: date,
           category: food.category,
+          measure: food.measure,
           name: food.name,
           calories: food.calories,
           carbs: food.carbs,

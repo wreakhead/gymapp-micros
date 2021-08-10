@@ -9,6 +9,7 @@ const url = process.env.KEY;
 const foodData = Schema(
   {
     category: { type: String },
+    measure: { type: String },
     date: { type: Date, default: new Date() },
     name: { type: String },
     calories: { type: Number },

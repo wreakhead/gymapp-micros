@@ -43,20 +43,30 @@ router.post("/addbreakfast", auth.authToken, async (req, res, next) => {
           return data;
         }
       });
-     
-      const calories = Math.round(
-        (filterOne[0]?.calories / 100) * breakfastData.amount
-      );
-      const carbs = Math.round(
-        (filterOne[0]?.carbs / 100) * breakfastData.amount
-      );
-      const fat = Math.round((filterOne[0]?.fat / 100) * breakfastData.amount);
-      const protein = Math.round(
-        (filterOne[0]?.protein / 100) * breakfastData.amount
-      );
-      const fiber = Math.round(
-        (filterOne[0]?.fiber / 100) * breakfastData.amount
-      );
+
+      let calories = 0;
+      let carbs = 0;
+      let fat = 0;
+      let protein = 0;
+      let fiber = 0;
+
+      if (filterOne[0]?.measure == "per 100gm") {
+        calories = Math.round(
+          (filterOne[0]?.calories / 100) * breakfastData.amount
+        );
+        carbs = Math.round((filterOne[0]?.carbs / 100) * breakfastData.amount);
+        fat = Math.round((filterOne[0]?.fat / 100) * breakfastData.amount);
+        protein = Math.round(
+          (filterOne[0]?.protein / 100) * breakfastData.amount
+        );
+        fiber = Math.round((filterOne[0]?.fiber / 100) * breakfastData.amount);
+      } else {
+        calories = Math.round(filterOne[0]?.calories * breakfastData.amount);
+        carbs = Math.round(filterOne[0]?.carbs * breakfastData.amount);
+        fat = Math.round(filterOne[0]?.fat * breakfastData.amount);
+        protein = Math.round(filterOne[0]?.protein * breakfastData.amount);
+        fiber = Math.round(filterOne[0]?.fiber * breakfastData.amount);
+      }
 
       console.log(filterOne);
       let addBreakfast = await DB.updateOne(
@@ -103,17 +113,28 @@ router.post("/addlunch", auth.authToken, async (req, res, next) => {
           return data;
         }
       });
-      const calories = Math.round(
-        (filterOne[0]?.calories / 100) * lunchData.amount
-      );
-      const carbs = Math.round((filterOne[0]?.carbs / 100) * lunchData.amount);
-      const fat = Math.round((filterOne[0]?.fat / 100) * lunchData.amount);
-      const protein = Math.round(
-        (filterOne[0]?.protein / 100) * lunchData.amount
-      );
-      const fiber = Math.round((filterOne[0]?.fiber / 100) * lunchData.amount);
+      let calories = 0;
+      let carbs = 0;
+      let fat = 0;
+      let protein = 0;
+      let fiber = 0;
 
-      
+      if (filterOne[0]?.measure == "per 100gm") {
+        calories = Math.round(
+          (filterOne[0]?.calories / 100) * lunchData.amount
+        );
+        carbs = Math.round((filterOne[0]?.carbs / 100) * lunchData.amount);
+        fat = Math.round((filterOne[0]?.fat / 100) * lunchData.amount);
+        protein = Math.round((filterOne[0]?.protein / 100) * lunchData.amount);
+        fiber = Math.round((filterOne[0]?.fiber / 100) * lunchData.amount);
+      } else {
+        calories = Math.round(filterOne[0]?.calories * lunchData.amount);
+        carbs = Math.round(filterOne[0]?.carbs * lunchData.amount);
+        fat = Math.round(filterOne[0]?.fat * lunchData.amount);
+        protein = Math.round(filterOne[0]?.protein * lunchData.amount);
+        fiber = Math.round(filterOne[0]?.fiber * lunchData.amount);
+      }
+
       let addlunch = await DB.updateOne(
         { mobile: req.id.mobile },
         {
@@ -158,17 +179,22 @@ router.post("/addsnacks", auth.authToken, async (req, res, next) => {
           return data;
         }
       });
-      const calories = Math.round(
-        (filterOne[0]?.calories / 100) * snacksData.amount
-      );
-      const carbs = Math.round((filterOne[0]?.carbs / 100) * snacksData.amount);
-      const fat = Math.round((filterOne[0]?.fat / 100) * snacksData.amount);
-      const protein = Math.round(
-        (filterOne[0]?.protein / 100) * snacksData.amount
-      );
-      const fiber = Math.round((filterOne[0]?.fiber / 100) * snacksData.amount);
+      if (filterOne[0]?.measure == "per 100gm") {
+        calories = Math.round(
+          (filterOne[0]?.calories / 100) * snacksData.amount
+        );
+        carbs = Math.round((filterOne[0]?.carbs / 100) * snacksData.amount);
+        fat = Math.round((filterOne[0]?.fat / 100) * snacksData.amount);
+        protein = Math.round((filterOne[0]?.protein / 100) * snacksData.amount);
+        fiber = Math.round((filterOne[0]?.fiber / 100) * snacksData.amount);
+      } else {
+        calories = Math.round(filterOne[0]?.calories * snacksData.amount);
+        carbs = Math.round(filterOne[0]?.carbs * snacksData.amount);
+        fat = Math.round(filterOne[0]?.fat * snacksData.amount);
+        protein = Math.round(filterOne[0]?.protein * snacksData.amount);
+        fiber = Math.round(filterOne[0]?.fiber * snacksData.amount);
+      }
 
-      
       let addsnacks = await DB.updateOne(
         { mobile: req.id.mobile },
         {
@@ -213,17 +239,22 @@ router.post("/adddinner", auth.authToken, async (req, res, next) => {
           return data;
         }
       });
-      const calories = Math.round(
-        (filterOne[0]?.calories / 100) * dinnerData.amount
-      );
-      const carbs = Math.round((filterOne[0]?.carbs / 100) * dinnerData.amount);
-      const fat = Math.round((filterOne[0]?.fat / 100) * dinnerData.amount);
-      const protein = Math.round(
-        (filterOne[0]?.protein / 100) * dinnerData.amount
-      );
-      const fiber = Math.round((filterOne[0]?.fiber / 100) * dinnerData.amount);
+      if (filterOne[0]?.measure == "per 100gm") {
+        calories = Math.round(
+          (filterOne[0]?.calories / 100) * dinnerData.amount
+        );
+        carbs = Math.round((filterOne[0]?.carbs / 100) * dinnerData.amount);
+        fat = Math.round((filterOne[0]?.fat / 100) * dinnerData.amount);
+        protein = Math.round((filterOne[0]?.protein / 100) * dinnerData.amount);
+        fiber = Math.round((filterOne[0]?.fiber / 100) * dinnerData.amount);
+      } else {
+        calories = Math.round(filterOne[0]?.calories * dinnerData.amount);
+        carbs = Math.round(filterOne[0]?.carbs * dinnerData.amount);
+        fat = Math.round(filterOne[0]?.fat * dinnerData.amount);
+        protein = Math.round(filterOne[0]?.protein * dinnerData.amount);
+        fiber = Math.round(filterOne[0]?.fiber * dinnerData.amount);
+      }
 
-      
       let addinner = await DB.updateOne(
         { mobile: req.id.mobile },
         {
